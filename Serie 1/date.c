@@ -32,4 +32,5 @@ int unpack_date(date3_t * dst, pkdate_t date){
 	dst.year = YEAR_BASE + (date&YEAR_MASK);
 	dst.month = (date>>MONTH_POS)&MONTH_MASK;
 	dst.day = (date>>DAY_POS)&DAY_MASK;
+	return 0;
 }
