@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#define MONTH_POS	7
+
 const int month_pos = 7;
 const int day_pos = 11;
 const int year_base = 1970;
@@ -7,16 +9,33 @@ const int year_cap = 2097;
 const int year_mask = 0x7F;
 const int month_mask = 0xF;
 const int day_mask = 0x1F;
-enum months { jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec };
 
+/*
+struct bitdate {
+	unsigned short day: 5;
+	unsigned short month: 4;
+	unsigned short year: 7;
+};
+*/
+
+enum months { jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, FIRST = jan, LAST = dec,  };
+
+const month_size[] = { 0, 31, 28, ... int 
 
 typedef unsigned short pkdate_t;
 typedef struct date3 { unsigned year; unsigned month; unsigned day; } date3_t;
 int pack_date(pkdate_t * dst, const date3_t * src);
 int unpack_date(date3_t * dst, pkdate_t date);
 
+/*
+union ubitdate {
+	pkdate_t pd;
+	struct bitdate bitdate;
+};
+*/
+
 int main(){
-	pkdate_t *dateptr, date_pack;
+	pkdate_t date_pack;
 	date3_t *srcptr, *dstptr, src,dst;
 	int pack_ret, unpack_ret;
 	src.year = 2014;
@@ -26,7 +45,7 @@ int main(){
 	srcptr = &src;
 	dstptr = &dst;
 	printf("Year: %d , Month: %d , Day: %d\n", src.year, src.month, src.day);
-	pack_ret = pack_date(dateptr, srcptr);
+	pack_ret = pack_date(&date_pack, srcptr);
 	printf("Pack function return: %d , Packed date: %d\n", pack_ret, *dateptr);
 	unpack_ret = unpack_date(dstptr, *dateptr);
 	printf("Unpack function return: %d , Year: %d , Month: %d , Day: %d\n",unpack_ret , dst.year, dst.month, dst.day);
@@ -42,6 +61,7 @@ int pack_date(pkdate_t * dst, const date3_t * src){
 		return -1;
 	if(m>12 || m ==0)
 		return -1;
+
 	if (m == feb){
 		if ((y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0))&&(d>29) ||
 			(!(y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0)) && (d>28)) || d == 0)
@@ -62,7 +82,13 @@ int pack_date(pkdate_t * dst, const date3_t * src){
 }
 
 int unpack_date(date3_t * dst, pkdate_t date){
-	unsigned y, m, d;
+/*	unsigned y, m, d;
+	union udate ud;
+
+	ud.pd = date;
+
+	ud.bitdate.day 
+*/
 	y = year_base + (date & year_mask);
 	m = (date >> month_pos) & month_mask;
 	d = (date >> day_pos) & day_mask;
