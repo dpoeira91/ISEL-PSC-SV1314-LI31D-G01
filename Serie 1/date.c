@@ -21,7 +21,7 @@ int main(){
 	int pack_ret, unpack_ret;
 	src.year = 2014;
 	src.month = 3;
-	src.day = 18;
+	src.day = 19;
 	dateptr = &date_pack;
 	srcptr = &src;
 	dstptr = &dst;
@@ -43,7 +43,8 @@ int pack_date(pkdate_t * dst, const date3_t * src){
 	if(m>12 || m ==0)
 		return -1;
 	if (m == feb){
-		if (d>28 || d == 0)
+		if ((y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0))&&(d>29) ||
+			(!(y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0)) && (d>28)) || d == 0)
 			return -1;
 	}
 	else{
@@ -70,7 +71,8 @@ int unpack_date(date3_t * dst, pkdate_t date){
 	if (m > 12 || m == 0)
 		return -1;
 	if (m == feb){
-		if (d>28 || d == 0)
+		if((y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0)) && (d>29) ||
+			(!(y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0)) && (d>28)) || d == 0)
 			return -1;
 	}
 	else{
