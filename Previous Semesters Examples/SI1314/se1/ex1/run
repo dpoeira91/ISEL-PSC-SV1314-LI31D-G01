@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Creates executable file 'se1-ex1' from the source code
+gcc -Wall -pedantic -std=c99 -g -o se1-ex1 se1-ex1.c se1-ex1-tests.c
+
+# If created successfully, execute the program to get test results
+if [ $? = 0 ]; then	./se1-ex1; fi
