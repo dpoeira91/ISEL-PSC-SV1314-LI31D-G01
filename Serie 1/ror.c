@@ -1,9 +1,9 @@
 #include <stdio.h>
-const int intSize = sizeof(int)* 8;
+#define INT_SIZE (sizeof(int)*8)
 int ror(int val, unsigned n);
 
 int main(){
-	printf("Size of Integer: %d bits\n", intSize);
+	printf("Size of Integer: %d bits\n", INT_SIZE);
 	int n, valToRotate;
 	valToRotate = 1;
 	for (n = 0; n<33; ++n)
@@ -12,5 +12,5 @@ int main(){
 }
 
 int ror(int val, unsigned n){
-	return (val << intSize - (n%intSize)) | (val >> (n%intSize));
+	return (val << INT_SIZE - (n%INT_SIZE)) | (val >> (n%INT_SIZE));
 }

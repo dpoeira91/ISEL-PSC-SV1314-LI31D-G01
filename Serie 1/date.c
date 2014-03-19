@@ -1,116 +1,87 @@
 #include <stdio.h>
 
-#define MONTH_POS	7
+//defines
+#define YEAR_BASE	1970
+#define YEAR_CAP	2097
 
-const int month_pos = 7;
-const int day_pos = 11;
-const int year_base = 1970;
-const int year_cap = 2097;
-const int year_mask = 0x7F;
-const int month_mask = 0xF;
-const int day_mask = 0x1F;
+//enum & constants
+enum months { JAN = 1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC, FIRST = JAN, LAST = DEC, };
 
-/*
-struct bitdate {
-	unsigned short day: 5;
-	unsigned short month: 4;
-	unsigned short year: 7;
+const int month_days[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31 ,30 ,31};
+
+//structures
+struct datebits {
+	unsigned short year : 7;
+	unsigned short month : 4;
+	unsigned short day: 5;	
 };
-*/
-
-enum months { jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, FIRST = jan, LAST = dec,  };
-
-const month_size[] = { 0, 31, 28, ... int 
 
 typedef unsigned short pkdate_t;
+
 typedef struct date3 { unsigned year; unsigned month; unsigned day; } date3_t;
+
+union upkdate {
+	pkdate_t pd;
+	struct datebits dbits;
+};
+
+//method declaration
 int pack_date(pkdate_t * dst, const date3_t * src);
 int unpack_date(date3_t * dst, pkdate_t date);
 
-/*
-union ubitdate {
-	pkdate_t pd;
-	struct bitdate bitdate;
-};
-*/
 
 int main(){
 	pkdate_t date_pack;
-	date3_t *srcptr, *dstptr, src,dst;
+	date3_t src,dst;
 	int pack_ret, unpack_ret;
-	src.year = 2014;
-	src.month = 3;
-	src.day = 19;
-	dateptr = &date_pack;
-	srcptr = &src;
-	dstptr = &dst;
+	src.year = 2011;
+	src.month = 2;
+	src.day = 28;
 	printf("Year: %d , Month: %d , Day: %d\n", src.year, src.month, src.day);
-	pack_ret = pack_date(&date_pack, srcptr);
-	printf("Pack function return: %d , Packed date: %d\n", pack_ret, *dateptr);
-	unpack_ret = unpack_date(dstptr, *dateptr);
+	pack_ret = pack_date(&date_pack, &src);
+	printf("Pack function return: %d , Packed date: %d\n", pack_ret, date_pack);
+	unpack_ret = unpack_date(&dst, date_pack);
 	printf("Unpack function return: %d , Year: %d , Month: %d , Day: %d\n",unpack_ret , dst.year, dst.month, dst.day);
 	return 0;
 }
 
 int pack_date(pkdate_t * dst, const date3_t * src){
-	unsigned y, m, d;
+	union upkdate ud;
+	unsigned y, m, d,leap = 0;
 	y = src -> year;
 	m = src -> month;
 	d = src -> day;
-	if(y<year_base || y>year_cap)
+	if(y<YEAR_BASE || y>YEAR_CAP )
 		return -1;
-	if(m>12 || m ==0)
+	if(m > LAST || m < FIRST)
 		return -1;
-
-	if (m == feb){
-		if ((y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0))&&(d>29) ||
-			(!(y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0)) && (d>28)) || d == 0)
-			return -1;
-	}
-	else{
-		if (m == jan || m == mar || m == may || m == jul || m == aug || m == oct || m == dec){
-			if (d > 31 || d == 0)
-				return -1;
-		}
-		else {
-			if (d > 30 || d == 0)
-				return -1;
-		}
-	}
-	*dst = (y-year_base)|(m<<month_pos)|(d<<day_pos);
+	if (y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0))
+		leap = 1;
+	if ((d > month_days[m] && !(m==FEB && leap==1 && d <= month_days[m]+leap)))
+		return -1;
+	ud.dbits.year = y - YEAR_BASE;
+	ud.dbits.month = m;
+	ud.dbits.day = d;
+	*dst = ud.pd;
 	return 0;
 }
 
 int unpack_date(date3_t * dst, pkdate_t date){
-/*	unsigned y, m, d;
-	union udate ud;
-
+	unsigned y, m, d, leap = 0;
+	union upkdate ud;
 	ud.pd = date;
 
-	ud.bitdate.day 
-*/
-	y = year_base + (date & year_mask);
-	m = (date >> month_pos) & month_mask;
-	d = (date >> day_pos) & day_mask;
-	if (y > year_cap)
+	y = YEAR_BASE + ud.dbits.year;
+	m = ud.dbits.month;
+	d = ud.dbits.day;
+	if (y > YEAR_CAP)
 		return -1;
-	if (m > 12 || m == 0)
+	if (m > LAST || m < FIRST)
 		return -1;
-	if (m == feb){
-		if((y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0)) && (d>29) ||
-			(!(y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0)) && (d>28)) || d == 0)
-			return -1;
-	}
-	else{
-		if (m == jan || m == mar || m == may || m == jul || m == aug || m == oct || m == dec){
-			if (d > 31 || d == 0)
-				return -1;
-		}
-		else {
-			if (d > 30 || d == 0)
-				return -1;
-		}
-	}
+	if(y % 4 == 0 && (y % 100 != 0 || y % 100 == 0 & y % 400 == 0))
+		leap = 1;
+	if ((d > month_days[m] && !(m == FEB && leap == 1 && d <= month_days[m] + leap)))
+		return -1;
 	dst -> year  = y;
 	dst -> month = m;
 	dst -> day   = d;
