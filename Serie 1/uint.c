@@ -1,41 +1,48 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-/*
-sign   exponent(8bits)    fraction(23bits)
-|           |                    |
-0       11111111       00000000000000000000000
+//defines
+#define MANTISSA_MASK ~(~0<<23)
 
-source:http://en.wikipedia.org/wiki/Single-precision_floating-point_format
-*/
+//structures
+struct floatstruct{
+	unsigned int mantissa : 23;
+	unsigned int exponent : 8;
+	unsigned int signal : 1;
+};
 
-#define signMask 0x80000000
-#define exponentMask 0x7F800000
-#define fractionMask 0x007FFFFF
+union floatbits{
+	float f;
+	struct floatstruct bits;
+};
 
+//methods declarations
 bool is_uint(float f);
 
 int main(){
-	float toTest;
-	toTest = 1.0;
-	is_uint(toTest);
-	return 0;
+	float f = 0.3;
+	union floatbits fb;
+	fb.f = f;
+	printf("MANTISSA_MASK : %d \n", MANTISSA_MASK);
+	printf("mantissa : %d \n", fb.bits.mantissa);
+	printf("exponent : %d \n", (fb.bits.exponent-127));
+	printf("signal : %d \n", fb.bits.signal);
+	printf("is_uint(%f) : ", f);
+	printf(is_uint(f) ? "true\n" : "false\n");
 }
 
 bool is_uint(float f){
-	unsigned int sign = f & signMask;
-//	unsigned int fraction = f & fractionMask;
-	unsigned int exponent = f & exponentMask;
-
-	if(sign == 1 || exponent != 0)
-		return false;	
-
-/* Um float e escrito em binario mas esta "dividido" em 3 partes:
-		sinal, expoente e parte significativa.
-		1 bit para o sinal + 23 bits para a parte significativa + 8 para o expoente = 32bits
-
-	   - Verificar se o sinal e 1, se for, retorna false
-	   - Fazer uma mascara com 8bits a zero e comparar com a parte do expoente, se for != 0 retorna false
-	*/
+	union floatbits fb;
+	unsigned decimal_part;
+	fb.f = f;
+	decimal_part = fb.bits.mantissa;
+	if (fb.bits.signal == 1)
+		return false;
+	if (fb.bits.exponent - 127 < 0)
+		return false;
+	if (((decimal_part << fb.bits.exponent-127) & MANTISSA_MASK )!= 0)
+		return false;
 	return true;
+
+	
 }
