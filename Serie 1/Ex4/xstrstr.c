@@ -2,15 +2,6 @@
 
 char *xstrstr(const char * haystack , const char * needle);
 
-int main(){
-	const char message[] = "escxxcolafd";
-	const char key[] = "cola";
-	char * ret;
-	ret = xstrstr( message , key );
-	printf( "%s \n", ret );
-	return 0;
-}
-
 char * xstrstr(const char *haystack , const char * needle){
 	// verifica se os ponteiros estão vazios
 	if(needle == '\0') // se needle tiver vazia retorna o ponteiro para o inicio da 1a string
