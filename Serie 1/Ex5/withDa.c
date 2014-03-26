@@ -5,29 +5,36 @@
 char *xstrstr(const char * haystack , const char * needle);
 
 
-int main(){
+int main(int argc, char **argv){
 	int c;	
-	char s[MAXCHARS];
+	char stringinput[MAXCHARS];
 	int i;
 	char *p;
-	char coisas[8] = "teste";
-	char * ret;
-
-
-
-	s[0] = (c=getchar());
-	p = &s[0];
-	for( i = 1 ; (c = getchar()) != EOF ; ++i )	
+	char * ret = NULL;
+	int argccopy = argc; // cada vez que acabo de testar as keywords, tenho de reiniciar
+	char **argvcopy;
+	argvcopy= argv;
+	stringinput[0] = (c=getchar());
+	p = &stringinput[0];
+	for( i = 1 ; (c = getchar()) != EOF ; ++i ){
 		if( c == '\n' ){		
-			c = '\0';			
-			s[i] = c ;			
-			ret = xstrstr(p, coisas);
-			if(ret != NULL)
-				printf( "%s \n", p );
-			p = &s[i+1];
+			c = '\0';
+			stringinput[i] = c;
+			while( (--argccopy>0)){		
+				ret = xstrstr(p, *++argvcopy);
+				if(ret != NULL){
+					printf( "%s \n", p );
+					break;
+				}
+			}
+			argccopy = argc; //o valor e decrementado no while, e necessario voltar a dizer o numero de argumentos
+			argvcopy = argv;// e necessario garantir que apos testar os argumentos, os ponteiros estao a apontar para o inicio dos argumentos
+			ret = NULL;     //reinicializacao das variaveis	
+			p = &stringinput[i+1]; // nao da problema para quando o i for 500? ou 499?	
 		}
 		else
-			s[i] = c;
-
+			stringinput[i] = c;
+		
+	}
 	return 0;
 }
