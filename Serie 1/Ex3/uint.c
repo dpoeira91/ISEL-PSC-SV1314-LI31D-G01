@@ -19,18 +19,6 @@ union floatbits{
 //methods declarations
 bool is_uint(float f);
 
-int main(){
-	float f = 0.3;
-	union floatbits fb;
-	fb.f = f;
-	printf("MANTISSA_MASK : %d \n", MANTISSA_MASK);
-	printf("mantissa : %d \n", fb.bits.mantissa);
-	printf("exponent : %d \n", (fb.bits.exponent-127));
-	printf("signal : %d \n", fb.bits.signal);
-	printf("is_uint(%f) : ", f);
-	printf(is_uint(f) ? "true\n" : "false\n");
-}
-
 bool is_uint(float f){
 	union floatbits fb;
 	unsigned decimal_part;
