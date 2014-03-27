@@ -1,12 +1,4 @@
 #include <stdio.h>
-//Vars
-const char * str1 = "A bbicicleta azul",
-*key1 = "bicicleta",
-*str2 = "aa bb cccca hhh",
-*key2 = "cca",
-*str3 = "da Caparica",
-*key3 = "Costa",
-*str4 = "Costaa da Caparica";
 //Methods
 char *xstrstr(const char * haystack, const char * needle);
 char *test_xstrstr(char * str, char * key);
@@ -14,24 +6,29 @@ int confirm_result(char *result,char *key);
 
 int main(){
 	char *message , *key ,* result;
-	message = (char *)str1;
-	key = (char *)key1;
+	message = "A bbicicleta azul";
+	key = "bicicleta";
 	int verify = 0;
 	result = test_xstrstr((char *)message, (char *)key);
 	verify = confirm_result(result, key);
 	if (verify == -1)
 		return -1;
-	message = (char *)str2;
-	key = (char *)key2;
+	message = "aa bb cccca hhh";
+	key = "cca";
 	result = test_xstrstr((char *)message, (char *)key);
 	verify = confirm_result(result, key);
 	if (verify == -1)
 		return -1;
-	message = (char *)str3;
-	key = (char *)key3;
+	message = "da Caparica";
+	key = "Costa";
 	result = test_xstrstr((char *)message, (char *)key);
 	if (result != NULL) return -1;
-	message = (char *)str4;
+	message = "Costaa da Caparica";
+	result = test_xstrstr((char *)message, (char *)key);
+	verify = confirm_result(result, key);
+	if (verify == -1)
+		return -1;
+	message = "CostaCosta da Caparica";
 	result = test_xstrstr((char *)message, (char *)key);
 	verify = confirm_result(result, key);
 	if (verify == -1)
