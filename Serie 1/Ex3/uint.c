@@ -28,7 +28,7 @@ bool is_uint(float f){
 		return false;
 	if (fb.bits.exponent - 127 < 0)
 		return false;
-	if (((decimal_part << fb.bits.exponent-127) & MANTISSA_MASK )!= 0)
+	if (((decimal_part << (fb.bits.exponent-127)) & MANTISSA_MASK )!= 0)
 		return false;
 	return true;
 

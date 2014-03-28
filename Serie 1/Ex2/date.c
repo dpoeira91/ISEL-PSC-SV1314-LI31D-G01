@@ -11,9 +11,9 @@ const int month_days[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31 ,30 ,31};
 
 //structures
 struct datebits {
-	unsigned short year : 7;
-	unsigned short month : 4;
-	unsigned short day: 5;	
+	unsigned short year : 7; //7bits to define the year ( 7bits = 128 possibilities, 2097-1970 = 127years)
+	unsigned short month : 4;//4bits to define the month( 4bits = 16 possibilities, 12 months)
+	unsigned short day: 5;	 //5bits to define the day  ( 5bits = 32 possibilities, 31 days max) 
 };
 
 typedef unsigned short pkdate_t;
@@ -39,7 +39,7 @@ int pack_date(pkdate_t * dst, const date3_t * src){
 		return -1;
 	if(m > LAST || m < FIRST)
 		return -1;
-	if (y % 4 == 0 && (y % 100 != 0 || (y % 100 == 0 && y % 400 == 0)))
+	if (y % 4 == 0 && (y % 100 != 0 || (y % 100 == 0 && y % 400 == 0))) // verify if it's a leap year
 		leap = 1;
 	if ((d > month_days[m] && !(m==FEB && leap==1 && d <= month_days[m]+leap)))
 		return -1;
