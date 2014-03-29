@@ -27,6 +27,7 @@ int main(){
 	src.month = 2;
 	src.day = 29;
 	src.year = 2014;	
+	printResult();
 
 	//year <base
 	src.year = 1909;
@@ -38,9 +39,9 @@ int main(){
 	printResult();
 
 	//valid date
-	src.year = 2011;
+	src.year = 2012;
 	src.month = 2;
-	src.day = 28;
+	src.day = 29;
 	printResult();
 	return 0;
 }

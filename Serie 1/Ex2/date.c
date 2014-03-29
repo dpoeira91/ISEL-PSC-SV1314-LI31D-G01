@@ -25,23 +25,21 @@ union upkdate {
 	struct datebits dbits;
 };
 
+//variables declared here, since we were declaring them twice, one for each function
+
+union upkdate ud;
+unsigned y, m, d;
+
 //method declaration
 int pack_date(pkdate_t * dst, const date3_t * src);
 int unpack_date(date3_t * dst, pkdate_t date);
+int verify_date(unsigned y, unsigned m, unsigned d); // since the verify need to be made on both cases (pack and unpack) and the code is the same, it's better to use a auxiliar function and don't repeat code
 
 int pack_date(pkdate_t * dst, const date3_t * src){
-	union upkdate ud;
-	unsigned y, m, d,leap = 0;
 	y = src -> year;
 	m = src -> month;
 	d = src -> day;
-	if(y<YEAR_BASE || y>YEAR_CAP )
-		return -1;
-	if(m > LAST || m < FIRST)
-		return -1;
-	if (y % 4 == 0 && (y % 100 != 0 || (y % 100 == 0 && y % 400 == 0))) // verify if it's a leap year
-		leap = 1;
-	if ((d > month_days[m] && !(m==FEB && leap==1 && d <= month_days[m]+leap)))
+	if(verify_date(y,m,d) == -1)
 		return -1;
 	ud.dbits.year = y - YEAR_BASE;
 	ud.dbits.month = m;
@@ -51,23 +49,29 @@ int pack_date(pkdate_t * dst, const date3_t * src){
 }
 
 int unpack_date(date3_t * dst, pkdate_t date){
-	unsigned y, m, d, leap = 0;
-	union upkdate ud;
 	ud.pd = date;
 
 	y = YEAR_BASE + ud.dbits.year;
 	m = ud.dbits.month;
 	d = ud.dbits.day;
-	if (y > YEAR_CAP)
-		return -1;
-	if (m > LAST || m < FIRST)
-		return -1;
-	if(y % 4 == 0 && (y % 100 != 0 || (y % 100 == 0 && y % 400 == 0)))
-		leap = 1;
-	if ((d > month_days[m] && !(m == FEB && leap == 1 && d <= month_days[m] + leap)))
+	if(verify_date(y,m,d) == -1)
 		return -1;
 	dst -> year  = y;
 	dst -> month = m;
 	dst -> day   = d;
 	return 0;
+}
+
+//aux function
+int verify_date(unsigned y, unsigned m, unsigned d){
+unsigned leap = 0;
+if(y<YEAR_BASE || y>YEAR_CAP )
+		return -1;
+	if(m > LAST || m < FIRST)
+		return -1;
+	if (y % 4 == 0 && (y % 100 != 0 || (y % 100 == 0 && y % 400 == 0))) // verify if it's a leap year
+		leap = 1;
+	if ((d > month_days[m] && !(m==FEB && leap==1 && d <= month_days[m]+leap)))
+		return -1;
+return 0;
 }
