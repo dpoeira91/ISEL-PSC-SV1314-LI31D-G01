@@ -12,10 +12,6 @@ unsigned reverse ( unsigned val ){
 	return aux;
 }
 
-(val >>i)
-&1
-31-i
-<<
 */
     .globl  reverse
 .text
