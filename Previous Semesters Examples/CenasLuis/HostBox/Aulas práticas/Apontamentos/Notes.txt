@@ -1,0 +1,24 @@
+static - indica que a variável é só do módulo onde está e não é utilizavel por outros
+
+extern - permite o acesso a uma dada variável noutro módulo
+
+inline - ...
+
+(void) (0) - maneira de dizer para não fazer nada, utilizado nos ternários
+
+macros fazem sentido para substituição de linhas, verificações e afins
+
+abort() termina o programa de forma abrupta. Equivale a System.exit(-1);
+
+#ifdef SYMBOL - Pergunta na macro se existe um determinado simbolo e efectua diferentes implementações em função dessa informação, termina-se com
+
+#endif
+
+Makefile == IMPORTANTE devido a tempos de compilação de projectos enormes. Compila o extritamente necessário, ou seja apenas os módulos que foram alterados e recompila o executável. Sintaxe:
+
+a : b c d e
+	recompila
+
+IMPORTANTE, usar TABS antes da recompilação.
+
+O comando make numa dada directoria verifica se existe algum ficheiro com o nome de Makefile e corre-o no caso de existir

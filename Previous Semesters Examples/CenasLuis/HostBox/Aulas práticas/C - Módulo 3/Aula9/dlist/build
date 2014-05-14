@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Compilação
+gcc -Wall -pedantic -std=c99 -c dlist.c
+gcc -Wall -pedantic -std=c99 -c prog.c
+
+# Ligação
+gcc -o prog prog.o dlist.o

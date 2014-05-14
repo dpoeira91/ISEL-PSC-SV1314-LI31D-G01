@@ -1,0 +1,5 @@
+﻿Criar um método que retorne uma sequencia de bits começando no indice especificado com o tamanho especificado também.
+
+
+
+unsigned readbits (unsigned v, unsigned idx, unsigned len);

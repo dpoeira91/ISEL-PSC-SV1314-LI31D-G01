@@ -1,0 +1,20 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+pushd $DIR 2>&1 > /dev/null
+
+if [ -e "../se2.tgz" ]; then
+	ID=`date +%s`
+	mv ../se2.tgz ../se2-$ID.tgz
+fi
+
+if [ -e "../se2.tgz" ]; then
+	echo "ERROR: se2.tgz could not be renamed to se2-$ID.tgz"
+else
+
+	find . -name run -o -name se2-ex[1-3].s -o -name se2-ex[1-3]-tests.c -o -name se2-ex4-keys.c -o -name build-pack-for-submission | xargs tar --transform 's|^\.|./se2|' -czvf ../se2.tgz 
+
+fi
+
+popd 2>&1 > /dev/null

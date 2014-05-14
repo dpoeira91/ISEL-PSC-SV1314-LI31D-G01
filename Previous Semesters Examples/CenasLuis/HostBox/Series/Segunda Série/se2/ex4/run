@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ -x "./bomb" ]
+	then
+
+# Creates executable file 'se2-ex4' from the source code
+gcc -Wall -pedantic -std=c99 -g -o se2-ex4-keys se2-ex4-keys.c
+
+# If created successfully, run the bomb with the keys produced by the program
+if [ $? = 0 ]; then	./se2-ex4-keys | ./bomb; fi
+
+else
+
+if [ -e "./bomb" ]
+	then
+echo "Your bomb is not an executable."
+else
+echo "Place your executable bomb in the current directory."
+fi
+
+fi
