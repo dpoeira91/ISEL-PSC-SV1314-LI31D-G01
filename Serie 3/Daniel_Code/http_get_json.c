@@ -29,17 +29,6 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
  
   return realsize;
 }
-/*
-int main(){
-	json_t * final;	
-	char * url;
-	url = "http://headers.jsontest.com/";
-	int *retcod;
-	retcod = 0;
-	final = http_get_json(url, retcod);
-	
-	return 0;
-}*/
  
 json_t * http_get_json(const char * url, int * retcod){
 
@@ -71,7 +60,7 @@ json_t * http_get_json(const char * url, int * retcod){
 	
 	/* get it! */ 
 	res = curl_easy_perform(curl_handle);
-	printf("%d\n",res);
+
 	/* check for errors */ 
 	if(res != CURLE_OK) {
 		fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
@@ -79,32 +68,17 @@ json_t * http_get_json(const char * url, int * retcod){
 		return NULL;
 	
 	}
-	else {
-		/*
-		* Now, our chunk.memory points to a memory block that is chunk.size
-		* bytes big and contains the remote file.
-		*
-		* Do something nice with it!
-		*/ 
-		
-		printf("%lu bytes retrieved\n", (long)chunk.size);
-	}
-
 	/* cleanup curl stuff */ 
 	curl_easy_cleanup(curl_handle);
 	
 	/* we're done with libcurl, so clean it up */ 
 	curl_global_cleanup();
+
+	json_t * thoth;
+	json_error_t error;
 	
-//	printf("%s", chunk.memory);
+	thoth = json_loads(chunk.memory,0, &error);
+	
+	return thoth;
 
-
-
-	json_t * jstring;
-	jstring = json_string(chunk.memory);
-
-	if(chunk.memory)
-		free(chunk.memory);
- 
-  return jstring;
 }
