@@ -1,36 +1,29 @@
 CFLAGS = -c -m32 -g -O1 -Wall -std=c99 -pedantic
 LFLAGS = -g -m32
-all: mylib.so mainJson mainGetFile
+
+all: lib mainGetFile
+
+lib : libWork.so
+
+libWork.so : libWork.o
+	gcc -shared -o libWork.so libWork.o -lcurl -ljansson -ldl
+
+libWork.o : libWork.c
+	gcc $(CFLAGS) -fPIC -o libWork.o libWork.c
 
 
-#mylib.so : http_get_json.o http_get_file.o
-#	gcc -o mylib.so -shared http_get_json.o http_get_file.o
+mainJson : mainJson.o libWork.so
+	gcc $(LFLAGS) -o mainJson mainJson.o
 
-mylib.so : http_get_json.o http_get_file.o
-	gcc $(LFLAGS) -o mylib.so http_get_json.o http_get_file.o 
+mainJson.o : mainJson.c libWork.so
+	gcc $(CFLAGS) -fPIC -o mainJson.o mainJson.c
 
-##mainJson : mylib.so mainJson.o
-##	gcc -rdynamic -o mainJson mainJson.o -ldl -lcurl -ljansson
 
-mainJson : mainJson.o mylib.so
-	gcc $(LFLAGS) -o mainJson mainJson.o -lcurl -ljansson
+mainGetFile : mainGetFile.o
+	gcc $(LFLAGS) -o mainGetFile mainGetFile.o libWork.so
 
-#mainGetFile : mylib.so mainGetFile.o
-#	gcc -rdynamic -o mainGetFile mainGetFile.o -ldl -lcurl -ljansson
-
-mainGetFile : mainGetFile.o mylib.so
-	gcc $(LFLAGS) -o mainGetFile mainGetFile.o -lcurl -ljansson
-
-http_get_json.o : http_get_json.c
-	gcc $(CFLAGS) http_get_json.c -lcurl -ljansson
-	
-http_get_file.o : http_get_file.c
-	gcc $(CFLAGS) http_get_file.c -lcurl -ljansson
-	
-mainJson.o : mainJson.c 
-	gcc $(CFLAGS) mainJson.c -lcurl -ljansson
-	
 mainGetFile.o : mainGetFile.c
-	gcc $(CFLAGS) mainGetFile.c -lcurl -ljansson
+	gcc $(CFLAGS) -fPIC -o mainGetFile.o mainGetFile.c
+
 clean:
-	rm mainJson mainJson.o mainGetFile mainGetFile.o
+	rm ./workLib workLib.so libWork.o mainJson mainJson.o mainGetFile mainGetFile.o 
