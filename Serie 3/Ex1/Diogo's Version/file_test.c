@@ -17,5 +17,6 @@ int main(){
 		printf("The program failed %d \n", tests - count);
 		return 1;
 	}
+	printf("All %d tests were sucessfull!\n", count);
 	return 0;
 }
