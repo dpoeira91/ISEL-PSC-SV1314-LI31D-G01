@@ -37,10 +37,10 @@ char * workitem_to_html(char * html_table_row, struct workItem item){
 		*group = td(group,(item.group) ? "Group" : "Individual"),
 		*report = td(report,(item.report) ? "Required" : "Optional"),
 		*attachment = td(attachment,(item.attachment) ? "Required" : "Optional"),
-		*row;
-	sprintf(html_table_row, "%s%s%s%s%s%s%s", acro , title, start, due , group, report, attachment);
-	html_table_row = tr(row,html_table_row);
-	free(html_table_row);
+		*row = malloc(1000);
+	sprintf(row, "%s%s%s%s%s%s%s", acro , title, start, due , group, report, attachment);
+	html_table_row = tr(html_table_row, row);
+	free(row);
 	free(acro);
 	free(title);
 	free(start);
@@ -54,6 +54,6 @@ char * workitem_to_html(char * html_table_row, struct workItem item){
 	due = NULL;
 	group = NULL;
 	report = NULL;
-	html_table_row = NULL;
-	return row;
+	row = NULL;
+	return html_table_row;
 }

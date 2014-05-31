@@ -7,31 +7,31 @@
 #define MAXSIZE 200
 
 char * table(char * table, const char * tableContents){
-	table = malloc(strlen(tableContents) + 26);
+	table = malloc(strlen(tableContents) + 27);
 	sprintf(table, "<table border = 1>%s</table>", tableContents);
 	return table;
 }
 
 char * tr(char * tr,const char * trContents){
-	tr = malloc(strlen(trContents) + 9);
+	tr = malloc(strlen(trContents) + 10);
 	sprintf(tr, "<tr>%s</tr>", trContents);
 	return tr;
 }
 
 char * td(char * td, const char * tdContents){
-	td = malloc(strlen(tdContents) + 9);
+	td = malloc(strlen(tdContents) + 10);
 	sprintf(td, "<td>%s</td>", tdContents);
 	return td;
 }
 
 char * th(char * th, const char * thContents){
-	th = malloc(strlen(thContents) + 9);
+	th = malloc(strlen(thContents) + 10);
 	sprintf(th, "<th>%s</th>", thContents);
 	return th;
 }
 
 char * h1(char * h1, const char * header){
-	h1 = malloc(strlen(header)+9);
+	h1 = malloc(strlen(header) + 10);
 	sprintf(h1, "<h1>%s</h1>", header);
 	return h1;
 }

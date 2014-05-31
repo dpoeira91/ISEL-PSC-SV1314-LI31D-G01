@@ -79,7 +79,7 @@ int main(){
 }
 
 char * parse_projects(json_t * projects, char * title){
-	char *builder = malloc(7000), *row, *header = malloc(1000), *html_table,*url,*aux,
+	char *builder = malloc(7000), *row, *header = malloc(1000), *html_table,*url,*aux = NULL,
 		*acro = th(acro,"Acronym"),
 		*t = th(t,"Title"),
 		*start = th(start,"Start Date"),
@@ -115,13 +115,13 @@ char * parse_projects(json_t * projects, char * title){
 	for (i = 0; i<json_array_size(projects); i++){
 		project = get_workItem(projects, i);
 		item = parse_workItem(project);
-		http_get_file(concat_document_url(url, title, item.id), contatToPtr(aux, "./Thoth/", item.document));
+		http_get_file((url=concat_document_url(url, title, item.id)), contatToPtr(aux, "./Thoth/", item.document));
 		free(aux);
 		aux = NULL;
 		free(url);
 		url = NULL;
 		if (item.attachment_name != NULL){
-			http_get_file(concat_attachment_url(url, title, item.id), contatToPtr(aux, "./Thoth/", item.attachment_name));
+			http_get_file((url = concat_document_url(url, title, item.id)), contatToPtr(aux, "./Thoth/", item.attachment_name));
 			free(url);
 			url = NULL;
 			free(aux);
