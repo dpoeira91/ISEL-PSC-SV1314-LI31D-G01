@@ -1,24 +1,23 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <curl/curl.h>
-#include <jansson.h>
 #include "libWork.h"
 
 json_t * find_class(json_t * root, char * acronym, char * semester , char * class_name){
 	json_t *classes, *acro, *sem, *name,*current_class ,*links,*self,*class_link;
 	const char *value;
 	size_t i;
-	int retcod[] = { 0 };
+	int retcod[] = { 0 }; // retcod = *int
+
 	if (!json_is_object(root)) {
 		fprintf(stderr, "***error: root is not an object\n");
 		return NULL;
 	}
+
 	classes = json_object_get(root, "classes");
 	if (!json_is_array(classes)) {
 		fprintf(stderr, "***error: classes is not an array\n");
 		return NULL;
 	}
+
+/* at this point, root i an array, so we will look for the info we need */
 	for (i = 0; i < json_array_size(classes); i++){
 		/* get the classes[i] object */
 		current_class = json_array_get(classes, i);
@@ -33,7 +32,7 @@ json_t * find_class(json_t * root, char * acronym, char * semester , char * clas
 		}
 		value = json_string_value(acro);
 		if ((strcmp(value, acronym)) != 0)
-			continue;
+			continue; // if the acronym is not the one we want, we skip the rest
 		sem = json_object_get(current_class, "lectiveSemesterShortName");
 		if (!json_is_string(sem)) {
 			fprintf(stderr, "***error: classes[%d].lectiveSemesterShortName is not a string\n", i);
@@ -41,15 +40,17 @@ json_t * find_class(json_t * root, char * acronym, char * semester , char * clas
 		}
 		value = json_string_value(sem);
 		if ((strcmp(value, semester)) != 0)
-			continue;
+			continue; // if the semester is not the one we want, we skip the rest
 		name = json_object_get(current_class, "className");
 		if (!json_is_string(sem)) {
 			fprintf(stderr, "***error: classes[%d].className is not a string\n", i);
 			return NULL;
 		}
 		value = json_string_value(name);
-		if ((strcmp(value, class_name)) != 0)
+		if ((strcmp(value, class_name)) != 0) //if the class name is not the one we want, we skip the rest
 			continue;
+
+/* by this time, we found the acronym, semester and class name, so let's look for the class link */
 		links = json_object_get(current_class, "_links");
 		if (!json_is_object(links)) {
 			fprintf(stderr, "***error: classes[%d]._links is not an object\n", i);
@@ -61,7 +62,7 @@ json_t * find_class(json_t * root, char * acronym, char * semester , char * clas
 			return NULL;
 		}
 		value = json_string_value(self);
-		class_link = http_get_json(value, retcod);
+		class_link = http_get_json(value, retcod); /* using http_get_json function, we return the class link in a json_t type */
 		return class_link;
 	}
 	return NULL;
@@ -133,6 +134,9 @@ struct workItem parse_workItem(json_t * workItem){
 							.group = 0, 
 							.report = 0, 
 							.attachment = 0 };
+
+/* let's check if all the information is valid */
+
 	id = json_object_get(workItem, "id");
 	if (!json_is_integer(id)){
 		fprintf(stderr, "***error: workItem.id is not a integer\n");
@@ -205,6 +209,8 @@ struct workItem parse_workItem(json_t * workItem){
 		fprintf(stderr, "***error: workitem.attachmentUploadInfo.isRequired is not a boolean\n");
 		return item;
 	}
+
+/* since all the information is valid, let's use it */
 	item.id = json_integer_value(id);
 	item.acronym = json_string_value(acronym);
 	item.title = json_string_value(title);

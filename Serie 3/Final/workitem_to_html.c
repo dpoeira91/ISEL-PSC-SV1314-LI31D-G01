@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <jansson.h>
-#include <curl/curl.h>
 #include "libWork.h"
 
 char * workitem_to_html(char * html_table_row, struct workItem item){
