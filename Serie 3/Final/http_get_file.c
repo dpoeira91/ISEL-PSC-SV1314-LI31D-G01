@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <curl/curl.h>
-#include "libWork.h"
+
+/*Functions that will be used*/
+int http_get_file(const char *url, const char * filename);
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
