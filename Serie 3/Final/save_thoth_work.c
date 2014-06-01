@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <curl/curl.h>
-#include <jansson.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -13,13 +8,13 @@ struct stat st = { 0 };
 
 int main(int argc, char *argv[]){
 	if (argc < 3){
-		printf("Not enough arguments");
+		printf("Not enough arguments\n");
 		return 1;
 	}
 	json_t *thoth,*_class,*projects;
 	FILE *file;
 	char * url = "http://thoth.cc.e.ipl.pt/api/v1/classes";
-	int retcod[] = { 0 };
+	int retcod[] = { 0 }; // retcod = *int
 	char *acronym = argv[1], *semester = argv[2], *class_name = argv[3], *title = NULL, *page = NULL;
 	title = concat_title(title, acronym, semester, class_name);
 	thoth = http_get_json(url, retcod);

@@ -1,19 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <curl/curl.h>
+#include "libWork.h"
 
-/*Functions that will be used*/
-int http_get_file(const char *url, const char * filename);
-
-static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
-{
+static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream){
 	size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
 	return written;
 }
 
-int http_get_file(const char *url, const char * filename)
-{
+int http_get_file(const char *url, const char * filename){
 	CURL *handler;
 	CURLcode CURLres;
 	FILE *file;
@@ -23,11 +16,14 @@ int http_get_file(const char *url, const char * filename)
 
 	/*Initializes the CURL handler to perform the HTTP GET*/
 	handler = curl_easy_init();
+
 	/*Checks if the init was performed*/
-	if (!handler){
+	if (!handler){ //if we don't have an handler, something went wrong
 		fprintf(stderr, "***error: curl_easy_init() failed\n");
 		return 1;
 	}
+
+// from here, we set the options that we want the curl to handle
 
 	/*Sets the handler's URL*/
 	curl_easy_setopt(handler, CURLOPT_URL, url);

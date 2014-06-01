@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <curl/curl.h>
-#include <jansson.h>
+#include "libWork.h"
 
 #define MAXSIZE 200
 

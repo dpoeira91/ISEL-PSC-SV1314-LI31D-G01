@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <jansson.h>
-#include <curl/curl.h>
+#include "libWork.h"
 
 /*This structure will help to store the json in memory instead of a file*/
 struct MemoryBuffer{
@@ -10,8 +6,7 @@ struct MemoryBuffer{
 	size_t size;
 };
 
-static size_t write_to_buffer(void *contents, size_t size, size_t nmemb, void *context)
-{
+static size_t write_to_buffer(void *contents, size_t size, size_t nmemb, void *context){
 	size_t contentsSize = size *nmemb;
 	struct MemoryBuffer *mem = (struct MemoryBuffer *) context;
 
@@ -32,7 +27,6 @@ static size_t write_to_buffer(void *contents, size_t size, size_t nmemb, void *c
 json_t * http_get_json(const char * url, int * retcod){
 	CURL *handler;
 	CURLcode res;
-	json_error_t err;
 	size_t flags = 0;
 
 	struct MemoryBuffer buffer;
@@ -76,6 +70,7 @@ json_t * http_get_json(const char * url, int * retcod){
 		*retcod = res;
 		return NULL;
 	}
+	json_error_t err;
 	json_t * json = json_loads(buffer.memory,flags,&err);
 	if (buffer.memory){
 		free(buffer.memory);
