@@ -3,8 +3,7 @@
 #include <string.h>
 #include <curl/curl.h>
 #include <jansson.h>
-#include "libWork.h"
-/*
+
 struct workItem {
 	int id;
 	const char *acronym;
@@ -18,7 +17,8 @@ struct workItem {
 	int attachment;
 
 };
-*/
+
+json_t * http_get_json(const char * url, int * retcod);
 
 json_t * find_class(json_t * root, char * acronym, char * semester , char * class_name){
 	json_t *classes, *acro, *sem, *name,*current_class ,*links,*self,*class_link;

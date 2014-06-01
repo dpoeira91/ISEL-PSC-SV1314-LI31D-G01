@@ -3,8 +3,17 @@
 #include <string.h>
 #include <jansson.h>
 #include <curl/curl.h>
-#include "libWork.h"
-/*
+
+char * table(char * table, const char * tableContents);
+char * tr(char * tr, const char * trContents);
+char * td(char * td, const char * tdContents);
+char * th(char * th, const char * thContents);
+char * h1(char * h1, const char * header);
+char * h2(char * h2, const char * header);
+char * h3(char * h3, const char * header);
+struct workItem parse_workItem(json_t * workItem);
+json_t * get_workItem(json_t * root_projects, int index);
+
 struct workItem {
 	int id;
 	const char *acronym;
@@ -18,8 +27,6 @@ struct workItem {
 	int attachment;
 
 };
-*/
-//struct workItem item;
 
 char * workitem_to_html(char * html_table_row, struct workItem item){
 	html_table_row = malloc(1000);

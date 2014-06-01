@@ -1,32 +1,28 @@
-CFLAGS = -c -m32 -g -O1 -Wall -std=c99 -pedantic
+CFLAGS = -c -m32 -Wall -std=c99 -pedantic
 LFLAGS = -g -m32
 
-all: libWork.so save_thoth_work
+#all: myHttpLib.so saveThothWork
 
-libWork.so :  http_get_file.o http_get_json.o html_representation.o json_resource_finder.o workitem_to_html.o
-	gcc -shared -o libWork.so http_get_file.o http_get_json.o html_representation.o json_resource_finder.o workitem_to_html.o -lcurl -ljansson -ldl
+#myHttpLib.so : http_get_json.o http_get_file.o json_resource_finder.o
+#	gcc $(LFLAGS) -o myHttpLib.so -shared http_get_json.o http_get_file.o json_resource_finder.o
 
-#libWork.o : http_get_file.c http_get_json.c html_representation.c json_resource_finder.c workitem_to_html.c
-#	gcc $(CFLAGS) -fPIC -o libWork.o http_get_file.c http_get_json.c html_representation.c json_resource_finder.c workitem_to_html.c
+#saveThothWork : myHttpLib.so save_thoth_work.o
+#	gcc $(CFLAGS) -rdynamic -o save_thoth_work save_thoth_work.o myHttpLib.so -ldl -lcurl -ljansson
+
+#clean : 
+#	rm ./http_get_file.o ./http_get_json.o ./save_thoth_work.o ./myHttpLib.so ./json_resource_finder.o
+
+save_thoth_work: save_thoth_work.o http_get_file.o http_get_json.o json_resource_finder.o
+	gcc $(LFLAGS) -o save_thoth_work save_thoth_work.o http_get_file.o http_get_json.o json_resource_finder.o
+
+save_thoth_work.o : save_thoth_work.c
+	gcc $(CFLAGS) -o save_thoth_work.o save_thoth_work.c
 
 http_get_file.o : http_get_file.c
-	gcc $(CFLAGS) http_get_file.c
-	
+	gcc $(CFLAGS) -o http_get_file.o http_get_file.c -lcurl
+
 http_get_json.o : http_get_json.c
-	gcc $(CFLAGS) http_get_json.c
-	
-html_representation.o : html_representation.c
-	gcc $(CFLAGS) html_representation.c
-	
+	gcc $(CFLAGS) -o http_get_json.o http_get_json.c -lcurl -ljansson
+
 json_resource_finder.o : json_resource_finder.c
-	gcc $(CFLAGS) json_resource_finder.c
-	
-workitem_to_html.o : workitem_to_html.c
-	gcc $(CFLAGS) workitem_to_html.c
-	
-	
-save_thoth_work : save_thoth_work.o libWork.so
-	gcc $(LFLAGS) -o save_thoth_work save_thoth_work.o ./libWork.so
-	
-clean:
-	rm ./libWork.so save_thoth_work save_thoth_work.o http_get_file.o http_get_json.o html_representation.o json_resource_finder.o workitem_to_html.o
+	gcc $(CFLAGS) -o json_resource_finder.o json_resource_finder.c -lcurl -ljansson
